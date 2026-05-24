@@ -1,62 +1,44 @@
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, LeakyReLU, BatchNormalization, Dropout
 import streamlit as st
 import os
 import numpy as np
 import cv2
 from PIL import Image
 
-# 1. MİMARİ: summary() çıktın ile BİREBİR aynı olacak şekilde güncellendi
-def get_model():
-    model = Sequential([
-        Conv2D(32, (3, 3), input_shape=(120, 120, 3)),
-        LeakyReLU(alpha=0.1),
-        BatchNormalization(),
-        MaxPooling2D(2, 2),
-        
-        Conv2D(64, (3, 3)),
-        LeakyReLU(alpha=0.1),
-        BatchNormalization(),
-        MaxPooling2D(2, 2),
-        Dropout(0.25),
-        
-        Conv2D(128, (3, 3)),
-        LeakyReLU(alpha=0.1),
-        BatchNormalization(),
-        MaxPooling2D(2, 2),
-        Dropout(0.25),
-        
-        Flatten(),
-        Dense(128),
-        LeakyReLU(alpha=0.1),
-        Dropout(0.5),
-        Dense(1, activation='sigmoid')
-    ])
-    return model
-
-# 2. YÜKLEME: Parçaları birleştir ve ağırlıkları yükle
+# 1. YÜKLEME: Mimariyi .keras, ağırlıkları .h5 dosyalarından yükle
 @st.cache_resource
 def load_my_model():
-    weights_filename = 'catdog_final_weights.h5'
+    # --- A. Mimariyi Birleştir ve Yükle ---
+    keras_filename = 'full_model_structure.keras'
+    # .keras parçalarının sayısını buraya yaz (örneğin 3 ise range(3))
+    with open(keras_filename, 'wb') as outfile:
+        for i in range(3): 
+            part_name = f'model_part{i}.keras'
+            if os.path.exists(part_name):
+                with open(part_name, 'rb') as infile:
+                    outfile.write(infile.read())
     
-    # Parçaları birleştir
+    # --- B. Ağırlıkları Birleştir ---
+    weights_filename = 'final_weights.h5'
     with open(weights_filename, 'wb') as outfile:
-        for i in range(9): 
+        for i in range(9):
             part_name = f'catdog_part{i}.h5'
             if os.path.exists(part_name):
                 with open(part_name, 'rb') as infile:
                     outfile.write(infile.read())
     
-    model = get_model()
-    # ÖNEMLİ: Ağırlıkları yükle
+    # --- C. Hibrit Yükleme ---
+    # Mimariyi dosyadan oku (compile=False yaparak hatayı engelliyoruz)
+    model = tf.keras.models.load_model(keras_filename, compile=False)
+    # Ağırlıkları mimarinin üzerine enjekte et
     model.load_weights(weights_filename)
+    
     return model
 
 # Modeli yükle
 model = load_my_model()
 
-# 3. ARAYÜZ
+# 2. ARAYÜZ (Aynı kalabilir)
 st.title("🐱 Cat vs Dog Classifier")
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
 
