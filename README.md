@@ -4,7 +4,7 @@
 This project is a deep learning-based image classification application trained on **1000 verified cat and dog images**. It utilizes a custom **CNN (Convolutional Neural Network)** architecture, optimized for accuracy and performance.
 
 ### 🌐 Live Application
-You can test the classifier here: [CatvsDog](https://catvsdog-bdsr.streamlit.app/)
+Access the tool here: [CatvsDog](https://catvsdog-bdsr.streamlit.app/)
 
 ## 🛠 Model Architecture
 The model's design focuses on robustness and feature extraction through carefully tuned layers:
