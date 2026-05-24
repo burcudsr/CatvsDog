@@ -1,3 +1,4 @@
+import tensorflow as tf
 import streamlit as st
 import os
 import keras
@@ -19,7 +20,8 @@ def merge_model():
     return output_file
 
 model_path = merge_model()
-model = keras.models.load_model(model_path, compile=False)
+#model = keras.models.load_model(model_path, compile=False)
+model = tf.keras.models.load_model(model_path, compile=False)
 
 # 2. Streamlit Interface
 st.title("🐱 Cat vs Dog Classifier")
