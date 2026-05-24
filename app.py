@@ -38,7 +38,6 @@ def get_model():
 
 # 2. MODEL YÜKLEME (NPZ üzerinden garantili yükleme)
 @st.cache_resource
-@st.cache_resource
 def load_my_model():
     model = get_model()
     data = np.load('catdog_weights.npz')
