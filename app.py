@@ -21,23 +21,30 @@ def get_model():
     return model
 
 # 2. Ağırlıkları Yükle
+# 1. Önce fonksiyonu tanımla
 @st.cache_resource
 def load_my_model():
-    # 3 parçayı birleştirip tek bir ağırlık dosyası yap
-    weights_filename = 'catdog_weights.h5'
+    weights_filename = 'catdog_final_weights.h5'
     with open(weights_filename, 'wb') as outfile:
-        for i in range(3):
-            part_name = f'catdog_part{i}.h5'
+        for i in range(9): 
+            part_name = f'catdog_part{i}.h5' 
             if os.path.exists(part_name):
                 with open(part_name, 'rb') as infile:
                     outfile.write(infile.read())
     
-    # Model mimarisini oluştur ve ağırlıkları içine yükle
-    model = get_model()
-    model.load_weights(weights_filename) # load_model yerine load_weights
+    # Model mimarisini oluştur
+    model = get_model() 
+    # Birleşen ağırlıkları yükle
+    model.load_weights(weights_filename)
+    
+    # Fonksiyonun işi bitince modeli dışarı ver
     return model
 
+# 2. FONKSİYON DIŞINDA: Modeli bir değişkene ata
 model = load_my_model()
+
+# 3. Artık aşağıda gönül rahatlığıyla 'model' değişkenini kullanabilirsin
+# (Örn: prediction = model.predict(img))
 
 # ... (Streamlit arayüzü kodların aynı kalabilir)
 # 2. Streamlit Interface
