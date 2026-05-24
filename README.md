@@ -18,3 +18,8 @@ The model's design focuses on robustness and feature extraction through carefull
 * **Dataset:** 1000 images processed and normalized.
 * **Preprocessing:** Automatic image resizing and pixel normalization (0-1 range) via OpenCV and Pillow.
 * **Tech Stack:** `TensorFlow/Keras` (Core Engine), `NumPy` (Weight Handling), `Streamlit` (Frontend).
+
+## 🚀 Scaling & Future Improvements
+While the current custom CNN performs on the 1000-image dataset, future iterations will focus on further increasing accuracy:
+
+* **Transfer Learning:** Integrating pre-trained models (e.g., MobileNetV2, ResNet50) to leverage features learned from millions of images (ImageNet). This will significantly boost performance on complex, real-world data.
