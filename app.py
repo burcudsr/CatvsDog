@@ -38,13 +38,32 @@ def get_model():
 
 # 2. MODEL YÜKLEME (NPZ üzerinden garantili yükleme)
 @st.cache_resource
+@st.cache_resource
 def load_my_model():
     model = get_model()
-    # NPZ dosyasını oku ve ağırlıkları modele zorla enjekte et
     data = np.load('catdog_weights.npz')
-    # npz içindeki dosyaların listesini al ve sıralı olarak model ağırlıklarına ata
-    weights = [data[key] for key in sorted(data.files)]
-    model.set_weights(weights)
+    
+    # Tüm ağırlıkları isimlerine göre sıralı al
+    # Genelde npz dosyalarında ağırlıklar 'layername_weightname_0', 'layername_weightname_1' gibi saklanır
+    # Bu yüzden sadece model katmanlarını sırayla dolaşıp ağırlıklarını atayalım
+    
+    # Ağırlık anahtarlarını bir listeye al
+    all_keys = sorted(data.files)
+    
+    # Her katman için ağırlıkları eşleştir
+    for layer in model.layers:
+        # Bu katmana ait ağırlık anahtarlarını bul
+        layer_weights_keys = [k for k in all_keys if layer.name in k]
+        
+        if layer_weights_keys:
+            # Anahtarları alfabetik sırayla (genelde kernel, bias, gamma, beta sırasıdır) diz
+            weights = [data[k] for k in sorted(layer_weights_keys)]
+            try:
+                layer.set_weights(weights)
+                st.write(f"✅ Loaded: {layer.name}")
+            except Exception as e:
+                st.write(f"❌ Error loading {layer.name}: {e}")
+    
     return model
 
 model = load_my_model()
