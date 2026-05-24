@@ -5,22 +5,21 @@ import os
 import numpy as np
 import cv2
 from PIL import Image
+import h5py 
 
-# Modeli bellekte birleştirip yükleyen fonksiyon
 @st.cache_resource
 def load_my_model():
-    # 3 parçayı bellekte birleştir (diskten okuyup RAM'e al)
-    combined_bytes = io.BytesIO()
-    for i in range(3):
-        part_name = f'catdog_part{i}.h5'
-        if os.path.exists(part_name):
-            with open(part_name, 'rb') as f:
-                combined_bytes.write(f.read())
+    # Parçaları birleştirip geçici bir dosya oluşturmak bazen daha garantidir
+    temp_filename = 'temp_model.h5'
+    with open(temp_filename, 'wb') as outfile:
+        for i in range(3):
+            part_name = f'catdog_part{i}.h5'
+            if os.path.exists(part_name):
+                with open(part_name, 'rb') as infile:
+                    outfile.write(infile.read())
     
-    # Bellekte birleşen veriyi model olarak yükle
-    combined_bytes.seek(0)
-    # h5 formatı için burası kritik:
-    model = tf.keras.models.load_model(combined_bytes, compile=False)
+    # h5py ile dosyayı oku ve Keras'a ver
+    model = tf.keras.models.load_model(temp_filename, compile=False)
     return model
 
 # Modeli yükle
