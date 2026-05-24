@@ -1,27 +1,30 @@
+import io
 import tensorflow as tf
 import streamlit as st
 import os
-import keras
 import numpy as np
 import cv2
 from PIL import Image
 
-# 1. Function to merge model parts
+# Modeli bellekte birleştirip yükleyen fonksiyon
 @st.cache_resource
-def merge_model():
-    output_file = 'catdog_final.h5' # .h5 olarak kaydet
-    if not os.path.exists(output_file):
-        with open(output_file, 'wb') as outfile:
-            for i in range(3):
-                part_name = f'catdog_part{i}.h5' # Dosya isimleri .h5
-                if os.path.exists(part_name):
-                    with open(part_name, 'rb') as infile:
-                        outfile.write(infile.read())
-    return output_file
+def load_my_model():
+    # 3 parçayı bellekte birleştir (diskten okuyup RAM'e al)
+    combined_bytes = io.BytesIO()
+    for i in range(3):
+        part_name = f'catdog_part{i}.h5'
+        if os.path.exists(part_name):
+            with open(part_name, 'rb') as f:
+                combined_bytes.write(f.read())
+    
+    # Bellekte birleşen veriyi model olarak yükle
+    combined_bytes.seek(0)
+    # h5 formatı için burası kritik:
+    model = tf.keras.models.load_model(combined_bytes, compile=False)
+    return model
 
-model_path = merge_model()
-#model = keras.models.load_model(model_path, compile=False)
-model = tf.keras.models.load_model(model_path, compile=False)
+# Modeli yükle
+model = load_my_model()
 
 # 2. Streamlit Interface
 st.title("🐱 Cat vs Dog Classifier")
