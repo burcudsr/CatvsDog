@@ -1,4 +1,5 @@
-# 🐱 Cat vs Dog Classifier
+
+# 🐱Cat vs 🐶Dog Classifier
 
 This project is a deep learning-based image classification application trained on **1000 verified cat and dog images**. It utilizes a custom **CNN (Convolutional Neural Network)** architecture, optimized for accuracy and performance.
 
