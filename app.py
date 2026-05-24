@@ -8,21 +8,18 @@ from PIL import Image
 # 1. Function to merge model parts
 @st.cache_resource
 def merge_model():
-    output_file = 'catdog_final.keras'
-    # Only merge if the combined file does not exist yet
+    output_file = 'catdog_final.h5' # .h5 olarak kaydet
     if not os.path.exists(output_file):
         with open(output_file, 'wb') as outfile:
-            # Assuming you uploaded 3 parts named part0, part1, and part2
             for i in range(3):
-                part_name = f'catdog_part{i}.keras'
+                part_name = f'catdog_part{i}.h5' # Dosya isimleri .h5
                 if os.path.exists(part_name):
                     with open(part_name, 'rb') as infile:
                         outfile.write(infile.read())
     return output_file
 
-# Load the merged model
 model_path = merge_model()
-model = keras.models.load_model(model_path)
+model = keras.models.load_model(model_path, compile=False)
 
 # 2. Streamlit Interface
 st.title("🐱 Cat vs Dog Classifier")
