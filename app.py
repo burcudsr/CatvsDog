@@ -69,7 +69,7 @@ model = load_my_model()
 
 # 3. STREAMLIT ARAYÜZÜ
 st.set_page_config(page_title="Cat vs Dog Classifier", page_icon="🐱")
-st.title("🐱 Cat vs Dog Classifier")
+st.title("🐱 vs 🐶 Classifier")
 st.write("Upload an image of a cat or a dog to see the prediction!")
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
